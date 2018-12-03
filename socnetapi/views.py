@@ -1,15 +1,18 @@
 from django.contrib.auth.models import User
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from socnetapi.serializers import UserSerializer, PostSerializer
 from socnetapi.models import Post
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(PermissionRequiredMixin, viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+    permission_required = (IsAdminUser,)
 
 
 class PostViewSet(LoginRequiredMixin, viewsets.ModelViewSet):
@@ -20,3 +23,17 @@ class PostViewSet(LoginRequiredMixin, viewsets.ModelViewSet):
 
     login_url = '/auth/login/'
     redirect_field_name = 'redirect_to'
+
+    @action(detail=True)
+    def like(self, request, pk=None):
+        post = self.get_object()
+        post.likes = post.likes + 1
+        post.save()
+        return Response(status=status.HTTP_200_OK)
+
+    @action(detail=True)
+    def unlike(self, request, pk=None):
+        post = self.get_object()
+        post.likes = post.likes - 1
+        post.save()
+        return Response(status=status.HTTP_200_OK)
