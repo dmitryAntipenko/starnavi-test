@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from rest_framework import viewsets
-
 from socnetapi.serializers import UserSerializer, PostSerializer
 from socnetapi.models import Post
 

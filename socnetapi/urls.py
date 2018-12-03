@@ -7,5 +7,5 @@ router.register(r'user', views.UserViewSet)
 router.register(r'post', views.PostViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls))
+    url(r'^', include(router.urls)),
 ]

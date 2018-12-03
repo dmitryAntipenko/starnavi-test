@@ -2,6 +2,7 @@ from django.conf.urls import url, include
 
 
 urlpatterns = [
-    url('^', include('socnetapi.urls')),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url('^api/', include('socnetapi.urls')),
+    url(r'^auth/', include('rest_auth.urls')),
+    url(r'^registration/', include('rest_auth.registration.urls')),
 ]
