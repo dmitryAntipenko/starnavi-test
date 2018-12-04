@@ -27,13 +27,13 @@ class PostViewSet(LoginRequiredMixin, viewsets.ModelViewSet):
     @action(detail=True)
     def like(self, request, pk=None):
         post = self.get_object()
-        post.likes = post.likes + 1
+        post.liked.add(request.user)
         post.save()
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=True)
     def unlike(self, request, pk=None):
         post = self.get_object()
-        post.likes = post.likes - 1
+        post.liked.remove(request.user)
         post.save()
         return Response(status=status.HTTP_200_OK)

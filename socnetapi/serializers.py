@@ -11,11 +11,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'id', 'username', 'password', 'email', 'posts')
 
 
-class PostSerializer(serializers.HyperlinkedModelSerializer):
+class PostSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(required=False, allow_blank=True, max_length=80)
     body = serializers.CharField(required=True, max_length=140)
-    likes = serializers.IntegerField(default=0)
+    liked = serializers.HyperlinkedRelatedField(required=False, many=True, view_name='user-detail', queryset=User.objects.all())
     author = serializers.PrimaryKeyRelatedField(required=True, queryset=User.objects.all())
 
     def create(self, validated_data):
@@ -26,4 +26,4 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('url', 'id', 'title', 'body', 'likes', 'author')
+        fields = ('id', 'title', 'body', 'liked', 'author')
